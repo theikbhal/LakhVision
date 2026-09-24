@@ -11,6 +11,9 @@ struct MenuBarView: View {
             Text("LakhVision · ₹20L in 2 Years")
                 .font(.headline)
 
+            ProgressView(value: math.progress)
+                .tint(.green)
+
             HStack {
                 Text("Saved")
                 Spacer()
@@ -32,10 +35,21 @@ struct MenuBarView: View {
                 Text("\(math.daysRemaining)")
             }
             HStack {
-                Text(math.isAhead ? "Pace" : "Behind pace")
+                Text("Daily / Week need")
+                Spacer()
+                Text("\(INR.compact(math.requiredDaily)) / \(INR.compact(math.requiredWeekly))")
+            }
+            HStack {
+                Text(math.isAhead ? "Pace ahead" : "Pace behind")
                 Spacer()
                 Text(INR.format(abs(math.paceDelta)))
                     .foregroundColor(math.isAhead ? .green : .red)
+            }
+            HStack {
+                Text("Streak / Best")
+                Spacer()
+                Text("\(store.data.streak)d / \(store.data.bestStreak)d")
+                    .foregroundColor(.orange)
             }
 
             Divider()
@@ -46,14 +60,28 @@ struct MenuBarView: View {
             }
             .keyboardShortcut("o")
 
-            Button("Quick +₹1,000") {
-                store.addSaved(1000)
+            Menu("Quick add") {
+                Button("+₹500") { store.addSaved(500) }
+                Button("+₹1,000") { store.addSaved(1000) }
+                Button("+₹2,000") { store.addSaved(2000) }
+                Button("+₹5,000") { store.addSaved(5000) }
+                Button("+₹10,000") { store.addSaved(10000) }
+                Button("+₹50,000") { store.addSaved(50000) }
+                Divider()
+                Button("Custom…") {
+                    openWindow(id: "main")
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
+
+            Button("Log visit (streak)") {
+                store.recordVisit()
             }
 
             Button("Send Test Notification") {
                 NotificationManager.shared.sendImmediate(
                     title: "LakhVision",
-                    body: "Daily · Weekly · Monthly reminders are on."
+                    body: "Daily · weekly · monthly reminders are on."
                 )
             }
 
@@ -65,6 +93,6 @@ struct MenuBarView: View {
             .keyboardShortcut("q")
         }
         .padding(12)
-        .frame(width: 280)
+        .frame(width: 300)
     }
 }

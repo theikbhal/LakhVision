@@ -22,7 +22,10 @@ struct SettingsView: View {
                 numberField("Car ₹", value: $store.data.carPrice)
                 numberField("House ₹", value: $store.data.housePrice)
                 numberField("Gold ₹ / gram", value: $store.data.goldPerGram)
+                LabeledContent("Gold sovereign (8g)",
+                               value: INR.format(store.data.goldPerGram * 8))
                 numberField("Farmland ₹ / acre", value: $store.data.farmlandPerAcre)
+                LabeledContent("1 acre = guntas", value: "40")
                 numberField("Tractor ₹", value: $store.data.tractorPrice)
                 numberField("Auto ₹", value: $store.data.autoPrice)
             }
@@ -47,6 +50,21 @@ struct SettingsView: View {
                             body: "Daily · weekly · monthly reminders configured."
                         )
                     }
+                }
+            }
+
+            Section("Streak & history") {
+                LabeledContent("Current streak", value: "\(store.data.streak) days")
+                LabeledContent("Best streak", value: "\(store.data.bestStreak) days")
+                LabeledContent("History snapshots", value: "\(store.data.history.count)")
+                LabeledContent("Milestone passed", value: "\(store.data.milestonePassed)%")
+                Button("Clear history & streak", role: .destructive) {
+                    store.data.history = []
+                    store.data.visitDates = []
+                    store.data.streak = 0
+                    store.data.bestStreak = 0
+                    store.data.lastVisitDay = ""
+                    store.data.milestonePassed = 0
                 }
             }
 

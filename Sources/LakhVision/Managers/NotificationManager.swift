@@ -31,8 +31,14 @@ final class NotificationManager {
         if data.dailyReminder {
             let content = UNMutableNotificationContent()
             content.title = "LakhVision — Daily Visit"
-            content.body = "\(math.daysRemaining) days left · \(math.percent)% done · \(INR.format(math.remaining)) to go. Open the app today."
+            var body = "\(math.daysRemaining) days left · \(math.percent)% done · \(INR.format(math.remaining)) to go."
+            if data.streak > 1 {
+                body += " Streak \(data.streak) days."
+            }
+            body += " Open the app today."
+            content.body = body
             content.sound = .default
+            content.userInfo = ["deepLink": "main"]
             var dc = DateComponents()
             dc.hour = data.dailyHour
             dc.minute = 0
@@ -45,8 +51,8 @@ final class NotificationManager {
 
         if data.weeklyReminder {
             let content = UNMutableNotificationContent()
-            content.title = "LakhVision — Weekly Check"
-            content.body = "Weekly minimum check: saved \(INR.format(data.saved)) of \(INR.format(data.target)). Review your pace."
+            content.title = "LakhVision — Weekly Minimum Check"
+            content.body = "Weekly check: \(INR.format(data.saved)) of \(INR.format(data.target)) · \(math.percent)%. Weekly need \(INR.format(math.requiredWeekly))."
             content.sound = .default
             var dc = DateComponents()
             dc.weekday = 1
@@ -62,7 +68,7 @@ final class NotificationManager {
         if data.monthlyReminder {
             let content = UNMutableNotificationContent()
             content.title = "LakhVision — Monthly Check (Worst Case)"
-            content.body = "If you skipped daily & weekly: month-once check. \(math.percent)% of ₹20L. Don't let the streak die."
+            content.body = "Month-once fallback if you missed daily & weekly. \(math.percent)% of ₹20L · streak \(data.streak)."
             content.sound = .default
             var dc = DateComponents()
             dc.day = 1
@@ -78,7 +84,6 @@ final class NotificationManager {
 
     private func scheduleDefaults() {
         let center = UNUserNotificationCenter.current()
-
         let content = UNMutableNotificationContent()
         content.title = "LakhVision — Daily Visit"
         content.body = "Open LakhVision and update your ₹20L goal progress."

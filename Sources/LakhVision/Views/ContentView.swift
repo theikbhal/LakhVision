@@ -10,22 +10,29 @@ struct ContentView: View {
                 .tabItem { Label("Goal Ways", systemImage: "chart.bar.fill") }
                 .tag(0)
 
+            HistoryView()
+                .tabItem { Label("History", systemImage: "chart.line.uptrend.xyaxis") }
+                .tag(1)
+
             NotesView()
                 .tabItem { Label("Notes", systemImage: "banknote.fill") }
-                .tag(1)
+                .tag(2)
 
             ThingsView()
                 .tabItem { Label("Things", systemImage: "cart.fill") }
-                .tag(2)
+                .tag(3)
 
             WhyView()
                 .tabItem { Label("Why", systemImage: "heart.fill") }
-                .tag(3)
+                .tag(4)
 
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-                .tag(4)
+                .tag(5)
         }
         .padding(8)
+        .onAppear {
+            store.recordVisit()
+        }
     }
 }
